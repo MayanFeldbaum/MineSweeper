@@ -8,6 +8,7 @@ var gLevel
 var gInterval
 var gGetHintsOn = false
 var megaIson
+var gclickavailable = 3
 
 var gGame = {
     isOn: false,
@@ -52,8 +53,11 @@ function chooseLevel(level) {
 }
 
 function initGame() {
+    gclickavailable = 3
     var elsmiley = document.querySelector('.smiley')
     elsmiley.innerText = '😊'
+    var elsafeClick = document.querySelector('.safeClick')
+    elsafeClick.innerText = 'Safe Click available:3'
     if (gInterval) clearInterval(gInterval)
     resetTime()
     gGame.isOn = false
@@ -230,11 +234,11 @@ function checkGameOver() {
                 minesMarkedCount++
         }
     }
-    if (gGame.shownCount === ((gLevel.SIZE ** 2)) && minesMarkedCount + gLevel.LIVES === gLevel.MINES) {
+    if (gGame.shownCount === ((gLevel.SIZE ** 2)) && minesMarkedCount + gLevel.MINES - gGame.markedCount === gLevel.MINES) {
         gameOver('🥳')
     }
 
-    if ((gLevel.LIVES > 0) && gGame.shownCount === ((gLevel.SIZE ** 2)) && minesMarkedCount=== gLevel.MINES) {
+    if ((gLevel.LIVES > 0) && gGame.shownCount === ((gLevel.SIZE ** 2)) && minesMarkedCount === gLevel.MINES) {
         gameOver('🥳')
     }
 }
@@ -374,23 +378,28 @@ function checkNegsZeros(row, col) {
     }
 }
 
-function safeClick(){
+function safeClick(safeBtn) {
 
-    const randomCell = getRandomSafeCell()
-    const row = randomCell.i
-    const col = randomCell.j
-    const elCell = document.querySelector(`#cell-${row}-${col}`)
-    elCell.classList.add('shown')
-    setTimeout(() => {
-        elCell.classList.remove('shown') }, 1000)
-        
+    if (gclickavailable !== 0) {
+        const randomCell = getRandomSafeCell()
+        const row = randomCell.i
+        const col = randomCell.j
+        const elCell = document.querySelector(`#cell-${row}-${col}`)
+        elCell.classList.add('shown')
+        setTimeout(() => {
+            elCell.classList.remove('shown')
+        }, 1000)
+        gclickavailable--
+        safeBtn.innerText = `Safe Click available:${gclickavailable}`
+    }
 }
 
-function getRandomSafeCell(){
+
+function getRandomSafeCell() {
     const RandomSafeCells = []
     for (var i = 0; i < gBoard.length; i++) {
         for (var j = 0; j < gBoard.length; j++) {
-            if (!gBoard[i][j].isShown&&!gBoard[i][j].isMine) {
+            if (!gBoard[i][j].isShown && !gBoard[i][j].isMine) {
                 const safeCell = { i: i, j: j }
                 RandomSafeCells.push(safeCell)
             }

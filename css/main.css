@@ -1,16 +1,28 @@
-body{
-text-align: center;
+body {
+    text-align: center;
+    background-color: rgba(234, 234, 231, 0.656);
 }
 
+img {
+    height: 180px;
+}
 
-table{
+.container {
+    background-color: rgba(233, 216, 166, 0.741);
+    width: 1000px;
+    margin: auto;
+    border-radius: 5px;
+    padding-bottom: 10px;
+}
+
+table {
     border-spacing: 5px;
-    margin: 20px auto;
+    margin: 10px auto;
 }
 
 .cell {
-    width: 45px;
-    height: 45px;
+    width: 50px;
+    height: 50px;
     text-decoration: none;
     border: none;
     padding: 10px;
@@ -19,7 +31,7 @@ table{
     background-color: rgb(183, 183, 164);
     color: #fff;
     border-radius: 5px;
-    box-shadow: 7px 6px 28px 1px rgba(0, 0, 0, 0.20);
+    box-shadow: 7px 6px 30px 1px rgba(0, 0, 0, 0.20);
     cursor: pointer;
     outline: none;
     transition: 0.2s all;
@@ -36,8 +48,10 @@ h3 button {
     width: 100px;
     padding: 10px;
     cursor: pointer;
-    font-family:Arial, Helvetica, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
     font-weight: bolder;
+    border-radius: 5px;
+    border-width: 1px;
 }
 
 .smiley {
@@ -46,33 +60,54 @@ h3 button {
     cursor: pointer;
     background-color: transparent;
 
+
 }
 
-h2{
-    padding:10px
+h2 {
+    padding: 10px
 }
 
-h4 button{
+h4 button {
     background: url(/img/hint.png) no-repeat;
     background-color: transparent;
-    border:none;
-    padding:40px;
+    border: none;
+    padding: 40px;
     font-size: 16px;
     cursor: pointer;
 
 }
-.shown{
-    background-color:rgba(218, 215, 205, 0.56);
+
+h5 button {
+    padding: 10px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bolder;
+    border-radius: 5px;
+}
+
+.shown {
+    background-color: rgba(218, 215, 205, 0.56);
     color: black;
 }
-.is-clicked{
+
+.is-clicked {
     background: url(/img/hintOff.png) no-repeat;
     pointer-events: none;
 }
 
-.time{
-    background-color: rgb(233, 237, 201);
-    width: 400px;
-    margin:auto;
+.time {
+    background-color: rgb(10, 147, 150);
+    margin: auto;
     word-spacing: 15px;
+}
+
+h3 button:hover,
+h5 button:hover {
+    background-color: rgb(0, 95, 115);
+}
+
+h3 button,
+h5 button {
+    background-color: rgb(202, 103, 2);
+    border: none;
+    cursor: pointer;
 }

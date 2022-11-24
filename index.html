@@ -10,29 +10,32 @@
 </head>
 
 <body onload="initGame()">
+<img src="/img/MINE.png"/>
 
-    <h1>MineSweeper</h1>
+    <div class ="container">
     <button class="smiley" onclick="initGame()">😊</button>
     <h2 class="time">
     </h2>
 
+    <h4>
+        <button onClick="getHints(this)"></button>
+        <button onClick="getHints(this)"></button>
+        <button onClick="getHints(this)"></button>
+    </h4>
+    <table>
+        <tbody class="board">
+            
+        </tbody>
+    </table>
+    <h5>
+        <button class="safeClick" onclick="safeClick(this)">Safe Click available:3</button>
+    </h5>
     <h3>
         <button onclick="chooseLevel('easy')">Easy</button>
         <button onclick="chooseLevel('medium')">Medium</button>
         <button onclick="chooseLevel('expert')">Expert</button>
-        <button onclick="safeClick()">SafeBtn</button>
     </h3>
-    <h4>
-    <button onClick="getHints(this)"></button>
-    <button onClick="getHints(this)"></button>
-    <button onClick="getHints(this)"></button>
-</h4>
-    <table>
-        <tbody class="board">
-
-        </tbody>
-    </table>
-
+</div>
     <script src="js/main.js"></script>
 </body>
 
