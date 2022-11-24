@@ -8,13 +8,56 @@ table{
     margin: 20px auto;
 }
 
-.cell{
-    width: 50px;
-    height: 50px;
-    background-color: gray;
-    text-align: center;
+.cell {
+    width: 45px;
+    height: 45px;
+    text-decoration: none;
+    border: none;
+    padding: 10px;
+    font-size: 20px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    background-color: rgb(183, 183, 164);
+    color: #fff;
+    border-radius: 5px;
+    box-shadow: 7px 6px 28px 1px rgba(0, 0, 0, 0.20);
     cursor: pointer;
-    border-radius: 3px;
-    border: 1px solid black;
+    outline: none;
+    transition: 0.2s all;
 }
 
+.cell:active {
+    transform: scale(0.98);
+    box-shadow: 3px 2px 22px 1px rgba(0, 0, 0, 0.24);
+
+}
+
+h3 button {
+
+    width: 100px;
+    padding: 10px;
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif
+}
+
+.smiley {
+    font-size: 50px;
+    border: none;
+    cursor: pointer;
+
+}
+
+h2{
+    padding:10px
+}
+
+h4 button{
+    padding:10px;
+    font-size: 16px;
+}
+.shown{
+    background-color:rgba(218, 215, 205, 0.56);
+    color: black;
+}
+.is-clicked{
+
+    pointer-events: none;
+}
