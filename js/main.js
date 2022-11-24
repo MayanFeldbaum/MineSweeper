@@ -1,8 +1,7 @@
 'use strict'
-// window.addEventListener('contextmenu', function (e) {
-//     e.preventDefault();
-// }, false);
-
+window.addEventListener('contextmenu', function (e) {
+    e.preventDefault();
+}, false);
 
 var gBoard
 var gLevel
@@ -29,6 +28,7 @@ function chooseLevel(level) {
             SIZE: 4,
             MINES: 2,
             LIVES: 2,
+
         }
     }
     if (level === 'medium') {
@@ -36,6 +36,7 @@ function chooseLevel(level) {
             SIZE: 8,
             MINES: 14,
             LIVES: 3,
+
         }
     }
     if (level === 'expert') {
@@ -43,6 +44,7 @@ function chooseLevel(level) {
             SIZE: 12,
             MINES: 32,
             LIVES: 3,
+
         }
     }
 
@@ -58,13 +60,13 @@ function initGame() {
     gGame.shownCount = 0
     gGame.markedCount = 0
     gGame.secsPassed = 0
-    if(gLevel.SIZE>4) gLevel.LIVES=3
-    else gLevel.LIVES=2
+    if (gLevel.SIZE > 4) gLevel.LIVES = 3
+    else gLevel.LIVES = 2
+    clearHintsButton()
     gBoard = buildBoard()
     renderBoard(gBoard)
 
 }
-
 
 function buildBoard() {
     const board = []
@@ -159,14 +161,18 @@ function cellClicked(elCell, row, col) {
     if (!gGame.isOn) {
         startTimer()
         gGame.isOn = true
-        const elCell = document.querySelector(`#cell-${row}-${col}`)
-        if (gBoard[row][col].minesAroundCount === 0) elCell.innerText = ` `
-        else elCell.innerText = `${gBoard[row][col].minesAroundCount} `
-        elCell.classList.add('shown')
-        gBoard[row][col].isShown = true
-        gGame.shownCount++
         addMines()
         setMinesNegsCount(gBoard)
+        const elCell = document.querySelector(`#cell-${row}-${col}`)
+        if (gBoard[row][col].minesAroundCount === 0) {
+            checkNegsZeros(row, col)
+        }
+        else {
+            elCell.innerText = `${gBoard[row][col].minesAroundCount} `
+            elCell.classList.add('shown')
+            gBoard[row][col].isShown = true
+            gGame.shownCount++
+        }
     }
 
     if (gGetHintsOn) {
@@ -176,7 +182,6 @@ function cellClicked(elCell, row, col) {
         gGetHintsOn = false
     }
 
-
     else {
         checkGameOver()
 
@@ -184,7 +189,7 @@ function cellClicked(elCell, row, col) {
         if (gBoard[row][col].isShown) return
 
         if (!gBoard[row][col].isMine) {
-            if (!gBoard[row][col].isShown) gGame.shownCount++
+            gGame.shownCount++
             gBoard[row][col].isShown = true
             if (gBoard[row][col].minesAroundCount > 0) elCell.innerText = `${gBoard[row][col].minesAroundCount}`
             elCell.classList.add('shown')
@@ -193,27 +198,8 @@ function cellClicked(elCell, row, col) {
 
             if (gBoard[row][col].minesAroundCount === 0) {
                 checkGameOver()
-
-                const elNegsCell = document.querySelector(`#cell-${i}-${j}`)
-                elCell.innerText = ' '
-                elCell.classList.add('shown')
-
-                for (var i = row - 1; i <= row + 1; i++) {
-                    if (i < 0 || i >= gBoard.length) continue
-                    for (var j = col - 1; j <= col + 1; j++) {
-                        if (j < 0 || j >= gBoard[i].length) continue
-                        if (i === row && j === col) continue
-                        if (gBoard[i][j].isMine || gBoard[i][j].isMarked || gBoard[i][j].isShown) continue
-                        gBoard[i][j].isShown = true
-                        gGame.shownCount++
-                        const elNegsCell = document.querySelector(`#cell-${i}-${j}`)
-                        if (gBoard[i][j].minesAroundCount > 0) elNegsCell.innerText = `${gBoard[i][j].minesAroundCount}`
-                        if (gBoard[i][j].minesAroundCount === 0) elNegsCell.innerText = ' '
-                        elNegsCell.classList.add('shown')
-                    }
-                }
+                checkNegsZeros(row, col)
             }
-
 
         }
         if (gBoard[row][col].isMine && gBoard[row][col].isShown) {
@@ -237,7 +223,18 @@ function cellClicked(elCell, row, col) {
 }
 
 function checkGameOver() {
-    if ((gLevel.LIVES > 0) && gGame.shownCount === ((gLevel.SIZE ** 2))) {
+    var minesMarkedCount = 0
+    for (var i = 0; i < gBoard.length; i++) {
+        for (var j = 0; j < gBoard.length; j++) {
+            if (gBoard[i][j].isMine && gBoard[i][j].isMarked)
+                minesMarkedCount++
+        }
+    }
+    if (gGame.shownCount === ((gLevel.SIZE ** 2)) && minesMarkedCount + gLevel.LIVES === gLevel.MINES) {
+        gameOver('🥳')
+    }
+
+    if ((gLevel.LIVES > 0) && gGame.shownCount === ((gLevel.SIZE ** 2)) && minesMarkedCount=== gLevel.MINES) {
         gameOver('🥳')
     }
 }
@@ -252,6 +249,7 @@ function cellMarked(elCell, i, j) {
         gBoard[i][j].isMarked = false
         elCell.innerText = ''
         gGame.markedCount--
+        gGame.shownCount--
     }
 
     else {
@@ -293,12 +291,13 @@ function resetTime() {
 }
 
 function getHints(button) {
-    if (button.innerText === 'x'){
+    if (!gGame.isOn || clickCount > 0) {
         return
     }
-    gGetHintsOn = true
-    button.innerText = 'x'
     button.classList.add('is-clicked')
+    var clickCount = 0
+    gGetHintsOn = true
+    clickCount++
 }
 
 function cellNegsHint(row, col) {
@@ -319,6 +318,9 @@ function cellNegsHint(row, col) {
             if (gBoard[i][j].isMine) {
                 elNegsCell.innerText = '💣'
             }
+            if (gBoard[i][j].isMarked) {
+                elNegsCell.innerText = '🚩'
+            }
 
         }
     }
@@ -329,7 +331,7 @@ function cellNegsHintClear(row, col) {
         if (i < 0 || i >= gBoard.length) continue
         for (var j = col - 1; j <= col + 1; j++) {
             if (j < 0 || j >= gBoard[i].length) continue
-            if (gBoard[i][j].isShown) continue
+            if (gBoard[i][j].isShown || gBoard[i][j].isMarked) continue
             const elNegsCellClear = document.querySelector(`#cell-${i}-${j}`)
             elNegsCellClear.innerText = ' '
             elNegsCellClear.classList.remove('shown')
@@ -337,3 +339,63 @@ function cellNegsHintClear(row, col) {
     }
 }
 
+function clearHintsButton() {
+    var hintsButtons = document.querySelectorAll('h4 button')
+    for (var i = 0; i < hintsButtons.length; i++) {
+        var btn = hintsButtons[i]
+        btn.classList.remove('is-clicked')
+    }
+}
+
+function checkNegsZeros(row, col) {
+
+    const elNegsCell = document.querySelector(`#cell-${row}-${col}`)
+    elNegsCell.innerText = ' '
+    elNegsCell.classList.add('shown')
+
+    for (var i = row - 1; i <= row + 1; i++) {
+        if (i < 0 || i >= gBoard.length) continue
+        for (var j = col - 1; j <= col + 1; j++) {
+            if (j < 0 || j >= gBoard[i].length) continue
+            if (i === row && j === col) continue
+            if (gBoard[i][j].isMine || gBoard[i][j].isMarked || gBoard[i][j].isShown) continue
+            gBoard[i][j].isShown = true
+            gGame.shownCount++
+            const elNegsCell = document.querySelector(`#cell-${i}-${j}`)
+            if (gBoard[i][j].minesAroundCount > 0) {
+                elNegsCell.innerText = `${gBoard[i][j].minesAroundCount}`
+                elNegsCell.classList.add('shown')
+            }
+            if (gBoard[i][j].minesAroundCount === 0) {
+                elNegsCell.classList.add('shown')
+                checkNegsZeros(i, j)
+            }
+        }
+    }
+}
+
+function safeClick(){
+
+    const randomCell = getRandomSafeCell()
+    const row = randomCell.i
+    const col = randomCell.j
+    const elCell = document.querySelector(`#cell-${row}-${col}`)
+    elCell.classList.add('shown')
+    setTimeout(() => {
+        elCell.classList.remove('shown') }, 1000)
+        
+}
+
+function getRandomSafeCell(){
+    const RandomSafeCells = []
+    for (var i = 0; i < gBoard.length; i++) {
+        for (var j = 0; j < gBoard.length; j++) {
+            if (!gBoard[i][j].isShown&&!gBoard[i][j].isMine) {
+                const safeCell = { i: i, j: j }
+                RandomSafeCells.push(safeCell)
+            }
+        }
+    }
+    const shuffledRansomCells = RandomSafeCells.sort(() => Math.random() - 0.5)
+    return shuffledRansomCells[0]
+}
