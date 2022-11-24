@@ -68,7 +68,7 @@ h2 {
 }
 
 h4 button {
-    background: url(/img/hint.png) no-repeat;
+    background: url('../img/hint.png') no-repeat;
     background-color: transparent;
     border: none;
     padding: 40px;
@@ -90,7 +90,7 @@ h5 button {
 }
 
 .is-clicked {
-    background: url(/img/hintOff.png) no-repeat;
+    background: url('../img/hintOff.png') no-repeat;
     pointer-events: none;
 }
 
